@@ -24,8 +24,8 @@
     button:focus-visible, a:focus-visible { outline: 3px solid #ac4563; outline-offset: 5px; }
     .yes { color: white; border: 1px solid #c75e7b; background: #c75e7b; box-shadow: 0 5px 12px #c75e7b22; }
     .yes:hover { background: #b84e6b; }
-    .later { color: #86666e; border: 1px solid #ebdce0; background: transparent; }
-    .footer { margin: 27px 0 0; color: #a4828b; font-size: 12px; }
+    .no-slot { width: 91px; height: 49px; }
+    .later { width: 91px; color: #86666e; border: 1px solid #ebdce0; background: #fffdfb; z-index: 5; }
     .credit { display: inline-block; margin-top: 14px; color: #a4828b; font-size: 10px; text-decoration-color: #dac3ca; }
     .heart { position: fixed; pointer-events: none; bottom: -40px; font-size: 24px; animation: float 3s ease-out forwards; }
     @keyframes float { to { transform: translateY(-105vh) rotate(35deg); opacity: 0; } }
@@ -35,21 +35,20 @@
 </head>
 <body>
   <main>
-    <p class="note">Маленькое приглашение для тебя</p>
+    <p class="note">Маленькое приглашение для моей Виолетты</p>
     <div class="picture">
-      <img src="https://media.tenor.com/hBK9Al_tgq4AAAAC/cute-cat-couple.gif" alt="Два милых котика обнимаются, а над ними летают сердечки" width="218" height="218">
+      <img src="https://media1.tenor.com/m/MBhmqIKelSMAAAAC/peach-goma-mochi-cat.gif" alt="Серый котик целует белую кошечку" width="218" height="218">
       <span class="seal" aria-hidden="true">💌</span>
     </div>
     <div aria-live="polite" aria-atomic="true">
-      <h1 id="question">Пойдём<br>на свидание?</h1>
+      <h1 id="question">Пойдём на свидание,<br>Булочка?</h1>
       <p class="subtitle" id="message">Ты, я и немного хорошего настроения.<br>Котик тоже за ♡</p>
     </div>
     <div class="actions">
       <button class="yes" id="yes" type="button">Да, пойдём ♡</button>
-      <button class="later" id="later" type="button">Я подумаю</button>
+      <span class="no-slot" id="no-slot"><button class="later" id="later" type="button">Нет</button></span>
     </div>
-    <p class="footer">С улыбкой и небольшим волнением</p>
-    <a class="credit" href="https://tenor.com/ru/view/cute-cat-couple-gif-21260552" target="_blank" rel="noopener noreferrer">Котики · Tenor</a>
+    <a class="credit" href="https://tenor.com/view/peach-goma-mochi-cat-mochi-mochi-kiss-peach-goma-love-gif-3465632787193566499" target="_blank" rel="noopener noreferrer">Котики · Tenor</a>
   </main>
   <script>
     const question = document.getElementById('question');
@@ -58,9 +57,11 @@
     const later = document.getElementById('later');
     yes.addEventListener('click', () => {
       question.textContent = 'Ура! Это свидание ♡';
-      message.textContent = 'Напиши мне «да» в нашем чате — и договоримся, когда и куда 💌';
+      message.textContent = '';
+      message.hidden = true;
       yes.hidden = true;
       later.hidden = true;
+      document.getElementById('no-slot').hidden = true;
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
         for (let i = 0; i < 18; i++) {
           const heart = document.createElement('span');
@@ -75,9 +76,46 @@
         }
       }
     });
-    later.addEventListener('click', () => {
-      message.textContent = 'Конечно, не торопись. Котик подождёт ♡';
-      later.hidden = true;
+    function runAway(x, y) {
+      if (later.hidden) return;
+      const gap = 16;
+      const width = later.offsetWidth;
+      const height = later.offsetHeight;
+      const maxX = Math.max(gap, innerWidth - width - gap);
+      const maxY = Math.max(gap, innerHeight - height - gap);
+      const yesBox = yes.getBoundingClientRect();
+      const candidates = [];
+      for (let i = 0; i < 24; i++) {
+        const left = gap + Math.random() * (maxX - gap);
+        const top = gap + Math.random() * (maxY - gap);
+        if (left < yesBox.right + gap && left + width > yesBox.left - gap &&
+            top < yesBox.bottom + gap && top + height > yesBox.top - gap) continue;
+        candidates.push({ left, top, distance: Math.hypot(left + width / 2 - x, top + height / 2 - y) });
+      }
+      const target = candidates.sort((a, b) => b.distance - a.distance)[0];
+      if (!target) return;
+      Object.assign(later.style, { position: 'fixed', left: `${target.left}px`, top: `${target.top}px` });
+    }
+    document.addEventListener('pointermove', (event) => {
+      if (later.hidden || event.pointerType === 'touch') return;
+      const box = later.getBoundingClientRect();
+      const dx = Math.max(box.left - event.clientX, 0, event.clientX - box.right);
+      const dy = Math.max(box.top - event.clientY, 0, event.clientY - box.bottom);
+      if (Math.hypot(dx, dy) < 55) runAway(event.clientX, event.clientY);
+    });
+    later.addEventListener('pointerenter', (event) => runAway(event.clientX, event.clientY));
+    later.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      runAway(event.clientX, event.clientY);
+    });
+    later.addEventListener('click', (event) => {
+      event.preventDefault();
+      runAway(event.clientX, event.clientY);
+    });
+    window.addEventListener('resize', () => {
+      later.style.position = '';
+      later.style.left = '';
+      later.style.top = '';
     });
   </script>
 </body>

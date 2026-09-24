@@ -6,6 +6,6 @@ A small, mobile-friendly Russian date invitation. Plain HTML, CSS and JavaScript
 
 Push this folder to a GitHub repository. In **Settings → Pages**, select **Deploy from a branch**, choose **main** and **/ (root)**, then Save. GitHub displays the public URL when deployment finishes.
 
-The Yes button shows a celebration and asks the visitor to reply in your existing chat. Responses are not sent or stored. The cat GIF loads from Tenor and requires an internet connection.
+Personalized for Виолетта. The Yes button shows a heart celebration. The playful No button moves away from the pointer and on touch, staying inside the viewport. Responses are not sent or stored. The cat GIF loads from Tenor and requires an internet connection.
 
-GIF source: https://tenor.com/ru/view/cute-cat-couple-gif-21260552
+GIF source: https://tenor.com/view/peach-goma-mochi-cat-mochi-mochi-kiss-peach-goma-love-gif-3465632787193566499
