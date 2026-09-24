@@ -17,8 +17,8 @@
     .picture img { width: 92%; height: 92%; object-fit: contain; border-radius: 50%; }
     .seal { position: absolute; right: -7px; bottom: 2px; display: grid; place-items: center; width: 55px; height: 55px; border: 5px solid #fffdfb; border-radius: 50%; background: #ffe5e9; font-size: 23px; transform: rotate(12deg); }
     h1 { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(34px, 7.5vw, 48px); font-weight: 500; line-height: 1.12; letter-spacing: -.045em; color: #613c46; }
-    .subtitle { margin: 18px 0 27px; color: #8c6e75; font-size: 15px; line-height: 1.7; }
-    .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+    .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .actions[hidden] { display: none; }
     button { min-height: 49px; padding: 13px 25px; border-radius: 16px; font: 600 15px 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: transform .18s, background .18s; }
     button:hover { transform: translateY(-2px); }
     button:focus-visible, a:focus-visible { outline: 3px solid #ac4563; outline-offset: 5px; }
@@ -37,28 +37,32 @@
   <main>
     <p class="note">Маленькое приглашение для моей Виолетты</p>
     <div class="picture">
-      <img src="https://media1.tenor.com/m/MBhmqIKelSMAAAAC/peach-goma-mochi-cat.gif" alt="Серый котик целует белую кошечку" width="218" height="218">
+      <img id="cat" src="https://media1.tenor.com/m/m6cZxZLvRBUAAAAC/shy-cat-cat.gif" alt="Милый рыжий котёнок прячет мордочку за лапками" width="218" height="218">
       <span class="seal" aria-hidden="true">💌</span>
     </div>
     <div aria-live="polite" aria-atomic="true">
       <h1 id="question">Пойдём на свидание,<br>Булочка?</h1>
-      <p class="subtitle" id="message">Ты, я и немного хорошего настроения.<br>Котик тоже за ♡</p>
     </div>
     <div class="actions">
       <button class="yes" id="yes" type="button">Да, пойдём ♡</button>
       <span class="no-slot" id="no-slot"><button class="later" id="later" type="button">Нет</button></span>
     </div>
-    <a class="credit" href="https://tenor.com/view/peach-goma-mochi-cat-mochi-mochi-kiss-peach-goma-love-gif-3465632787193566499" target="_blank" rel="noopener noreferrer">Котики · Tenor</a>
+    <a class="credit" id="credit" href="https://tenor.com/search/shy-cat-gif-gifs" target="_blank" rel="noopener noreferrer">Котики · Tenor</a>
   </main>
   <script>
     const question = document.getElementById('question');
-    const message = document.getElementById('message');
+    const cat = document.getElementById('cat');
+    const kissUrl = 'https://media1.tenor.com/m/MBhmqIKelSMAAAAC/peach-goma-mochi-cat.gif';
+    const kissPreload = new Image();
+    kissPreload.src = kissUrl;
     const yes = document.getElementById('yes');
     const later = document.getElementById('later');
     yes.addEventListener('click', () => {
-      question.textContent = 'Ура! Это свидание ♡';
-      message.textContent = '';
-      message.hidden = true;
+      question.textContent = 'Ура!';
+      cat.src = kissUrl;
+      cat.alt = 'Серый котик целует белую кошечку';
+      document.getElementById('credit').href = 'https://tenor.com/view/peach-goma-mochi-cat-mochi-mochi-kiss-peach-goma-love-gif-3465632787193566499';
+      document.querySelector('.actions').hidden = true;
       yes.hidden = true;
       later.hidden = true;
       document.getElementById('no-slot').hidden = true;
